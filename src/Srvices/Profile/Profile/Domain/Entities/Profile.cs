@@ -3,13 +3,44 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Profile.Domain.Entities
 {
-    public class Profile
+    public abstract class Profile
     {
         public int Id { get; set; }
         public required string PhoneNumber { get; set; }
         public required string TimeZoneId { get; set; }
         public required string DateFormat { get; set; }
         public required string TimeFormat { get; set; }
+
+        public static Profile Create(string phonenumber, string code, string name)
+        {
+
+            Profile profile = code.Length switch
+            {
+                10 => new IndividualProfile
+                {
+                    PhoneNumber = phonenumber,
+                    TimeFormat = "",
+                    DateFormat = "",
+                    TimeZoneId = "",
+                    Name = name,
+                    LastName = name,
+                    NationalCode = code,
+                },
+                11 => new CorporateProfile
+                {
+                    TimeFormat = "",
+                    DateFormat = "",
+                    TimeZoneId = "",
+                    CompanyName = name,
+                    NationalId = code,
+                    PhoneNumber = phonenumber,
+
+                },
+                _ => throw new InvalidOperationException("Unknown profile type.")
+            };
+            return profile;
+
+        }
     }
 
     public class ProfileEntityTypeConfiguration : IEntityTypeConfiguration<Profile>
