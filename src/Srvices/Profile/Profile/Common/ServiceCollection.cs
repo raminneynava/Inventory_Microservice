@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 using Profile.Infrastructure.Data;
 
+using RedLockNet.SERedis;
 using RedLockNet.SERedis.Configuration;
 
 using StackExchange.Redis;
@@ -32,7 +33,7 @@ namespace Profile.Common
             {
                 var connectionMultiplexer = sp.GetRequiredService<IConnectionMultiplexer>();
                 var lockMultiplexer = new RedLockMultiplexer(connectionMultiplexer);
-                return lockMultiplexer;
+                return RedLockFactory.Create([lockMultiplexer]);
             });
         }
     }

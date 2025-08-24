@@ -10,28 +10,30 @@ namespace Profile.Features.GetByPhonenumber
 {
     public static class GetProfileByPhoneNumberEndPoint
     {
-        public static RouteGroupBuilder MapGetProfileByPhoneNumberEndPoint(this RouteGroupBuilder groupBuilder)
+        public static RouteGroupBuilder MapGetProfilePhoneNumberByIdEndPoint(this RouteGroupBuilder groupBuilder)
         {
-            groupBuilder.MapGet("/{phoneNumber}", GetProfileByPhoneNumber);
+            groupBuilder.MapGet("/{id}/phone-number", GetProfileByPhoneNumber);
             return groupBuilder;
         }
 
         private static async Task<IResult> GetProfileByPhoneNumber(
-            string phoneNumber,                  
+            int id,                  
             ProfileDbContext dbcontext,          
             CancellationToken cancellationToken)
         {
             var profile = await dbcontext.Profiles
-                .FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber, cancellationToken);
+                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
             return profile is not null
-                ? TypedResults.Ok(profile)
+                ? TypedResults.Ok(new GetProfilePhoneNumberByIdResponse(profile.PhoneNumber))
                 : TypedResults.NotFound(new
                 {
                     Message = "No profile found with the provided phone number",
-                    PhoneNumber = phoneNumber,
+                    Id = id,
                     Timestamp = DateTime.UtcNow
                 });
         }
     }
 }
+
+public record GetProfilePhoneNumberByIdResponse(string phonenumber);

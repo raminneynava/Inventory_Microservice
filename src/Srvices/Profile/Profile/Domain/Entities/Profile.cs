@@ -19,18 +19,18 @@ namespace Profile.Domain.Entities
                 10 => new IndividualProfile
                 {
                     PhoneNumber = phonenumber,
-                    TimeFormat = "",
-                    DateFormat = "",
-                    TimeZoneId = "",
-                    Name = name,
-                    LastName = name,
+                    TimeFormat = "HH:mm",
+                    DateFormat = "yyyy/MM/dd",
+                    TimeZoneId = "Asia/Tehran",
+                    Name = GetFiratName(name),
+                    LastName = GetLastName(name),
                     NationalCode = code,
                 },
                 11 => new CorporateProfile
                 {
-                    TimeFormat = "",
-                    DateFormat = "",
-                    TimeZoneId = "",
+                    TimeFormat = "HH:mm",
+                    DateFormat = "yyyy/MM/dd",
+                    TimeZoneId = "Asia/Tehran",
                     CompanyName = name,
                     NationalId = code,
                     PhoneNumber = phonenumber,
@@ -40,8 +40,19 @@ namespace Profile.Domain.Entities
             };
             return profile;
 
+            string GetFiratName(string name)
+            {
+                return name.Split(' ')[0];
+            }
+            string GetLastName(string name)
+            {
+                var parts = name.Split(' ');
+                return string.Join(" ", parts[1..]);
+            }
         }
     }
+
+
 
     public class ProfileEntityTypeConfiguration : IEntityTypeConfiguration<Profile>
     {
@@ -50,7 +61,7 @@ namespace Profile.Domain.Entities
             builder.HasKey(x => x.Id);
             builder.HasIndex(x => x.PhoneNumber).IsClustered(false).IsUnique();
             builder.Property(x => x.PhoneNumber).IsRequired().IsUnicode(false).HasMaxLength(11);
-            builder.Property(x => x.TimeZoneId).IsRequired().HasMaxLength(5);
+            builder.Property(x => x.TimeZoneId).IsRequired().HasMaxLength(20);
             builder.Property(x => x.DateFormat).IsRequired().HasMaxLength(20);
             builder.Property(x => x.TimeZoneId).IsRequired().HasMaxLength(20);
         }

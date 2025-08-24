@@ -20,7 +20,7 @@ app.UseHttpsRedirection();
 
 app.MapGroup("/profiles")
     .MapCreateIfNotexistEndPoint()
-    .MapGetProfileByPhoneNumberEndPoint();
+    .MapGetProfilePhoneNumberByIdEndPoint();
 
 app.Run();
 
